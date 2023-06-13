@@ -58,4 +58,14 @@ const getCountryAndBorderCountries = function (country) {
   });
 };
 
-getCountryAndBorderCountries('usa');
+//getCountryAndBorderCountries('usa');
+
+//const fetchReq = fetch(`https://restcountries.com/v3.1/name/russia`);
+//console.log(fetchReq);
+
+const getCountryData = function (countryName) {
+  fetch(`https://restcountries.com/v3.1/name/russia`)
+    .then(response => response.json())
+    .then(data => displayCountry(data[0]));
+};
+getCountryData('russia');

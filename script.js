@@ -64,8 +64,16 @@ const getCountryAndBorderCountries = function (country) {
 //console.log(fetchReq);
 
 const getCountryData = function (countryName) {
-  fetch(`https://restcountries.com/v3.1/name/russia`)
+  fetch(`https://restcountries.com/v3.1/name/${countryName}`)
     .then(response => response.json())
-    .then(data => displayCountry(data[0]));
+    .then(data => {
+      displayCountry(data[0]);
+      console.log(data);
+      const firstNeighbour = data[0].borders[0];
+      if (!firstNeighbour) return;
+      return fetch(`https://restcountries.com/v3.1/alpha/${firstNeighbour}`);
+    })
+    .then(response => response.json())
+    .then(data => displayCountry(data[0], 'neighbour'));
 };
-getCountryData('russia');
+getCountryData('germany');

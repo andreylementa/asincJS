@@ -4,6 +4,7 @@ const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
 //////////////////////////////////////////////////////
+btn.addEventListener('click', () => getCountryData('russia'));
 
 const displayCountry = function (data, className = '') {
   const currencies = Object.values(data.currencies)[0].name;
@@ -68,20 +69,43 @@ const displayError = function (message) {
   //countriesContainer.style.opacity = 1;
 };
 
+const getDataAndConvertToJSON = function (
+  url,
+  errorMessage = 'Что-то пошло не так.'
+) {
+  return fetch(url).then(response => {
+    if (!response.ok) {
+      throw new Error(`${errorMessage} Ошибка ${response.status}`);
+    }
+
+    return response.json();
+  });
+};
+
+//
+
 const getCountryData = function (countryName) {
-  fetch(`https://restcountries.com/v3.1/name/${countryName}`)
-    .then(response => response.json())
+  getDataAndConvertToJSON(
+    `https://restcountries.com/v3.1/name/${countryName}`,
+    'Страна не найдена'
+  )
     .then(data => {
       displayCountry(data[0]);
-      console.log(data);
+      if (!data[0].borders) throw new Error('Соседних стран не найдено');
       const firstNeighbour = data[0].borders[0];
+
       if (!firstNeighbour) return;
-      return fetch(`https://restcountries.com/v3.1/alpha/${firstNeighbour}`);
+      return getDataAndConvertToJSON(
+        `https://restcountries.com/v3.1/alpha/${firstNeighbour}`,
+        'Страна не найдена'
+      );
     })
-    .then(response => response.json())
     .then(data => displayCountry(data[0], 'neighbour'))
-    .catch(e => displayError(`Что-то пошло не так, ${e.message}`))
+    .catch(e => {
+      console.error(e);
+      displayError(`Что-то пошло не так, ${e.message}`);
+    })
     .finally(() => (countriesContainer.style.opacity = 1));
 };
 
-btn.addEventListener('click', () => getCountryData('germany'));
+getCountryData('japan');

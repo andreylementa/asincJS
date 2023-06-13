@@ -63,6 +63,11 @@ const getCountryAndBorderCountries = function (country) {
 //const fetchReq = fetch(`https://restcountries.com/v3.1/name/russia`);
 //console.log(fetchReq);
 
+const displayError = function (message) {
+  countriesContainer.insertAdjacentText('beforeend', message);
+  //countriesContainer.style.opacity = 1;
+};
+
 const getCountryData = function (countryName) {
   fetch(`https://restcountries.com/v3.1/name/${countryName}`)
     .then(response => response.json())
@@ -74,6 +79,9 @@ const getCountryData = function (countryName) {
       return fetch(`https://restcountries.com/v3.1/alpha/${firstNeighbour}`);
     })
     .then(response => response.json())
-    .then(data => displayCountry(data[0], 'neighbour'));
+    .then(data => displayCountry(data[0], 'neighbour'))
+    .catch(e => displayError(`Что-то пошло не так, ${e.message}`))
+    .finally(() => (countriesContainer.style.opacity = 1));
 };
-getCountryData('germany');
+
+btn.addEventListener('click', () => getCountryData('germany'));

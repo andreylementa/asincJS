@@ -227,6 +227,8 @@
 //getUserPosition()
 //  .then(res => console.log(res))
 //  .catch(err => console.error(err));
+////////////////////////////////////////////////////////////////////////
+//Задание 2
 const wait = function (seconds) {
   return new Promise(function (resolve) {
     setTimeout(resolve, seconds * 1000);
